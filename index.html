@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>פתיחת תביעה רכב – הפניקס (סוכן)</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>פתיחת תביעה רכב – הפניקס</h1>
+  <p>ממלאים את מה שיש לך ← שולחים למבוטח קישור ← הוא ממלא, חותם ושולח לך PDF מוכן בוואטסאפ.</p>
+</header>
+<main>
+  <div class="card">
+    <h2>פרטי פוליסה</h2>
+    <div class="grid">
+      <div><label class="l">מס' פוליסה <b>*</b></label><input id="policy" class="ltr" inputmode="numeric"></div>
+      <div><label class="l">תאריך המקרה (אם ידוע)</label><input id="eventDate" type="date"></div>
+      <div class="full"><label class="l">הסוכן</label>
+        <div class="grid" style="grid-template-columns:2fr 1fr"><input id="agentName" value="אייל חן"><input id="agentNo" value="98004" class="ltr"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>א. פרטי המבוטח</h2>
+    <div class="grid">
+      <div><label class="l">שם המבוטח <b>*</b></label><input id="name"></div>
+      <div><label class="l">ת.ז.</label><input id="idno" class="ltr" inputmode="numeric" maxlength="9"></div>
+      <div class="full"><label class="l">כתובת</label><input id="address"></div>
+      <div><label class="l">טלפון נייד (לשליחת הקישור בוואטסאפ)</label><input id="mobile" class="ltr" inputmode="tel"></div>
+      <div><label class="l">דוא"ל</label><input id="email" class="ltr" type="email"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>פרטי הרכב המבוטח</h2>
+    <div class="grid">
+      <div><label class="l">מספר רישוי</label><input id="plate" class="ltr"></div>
+      <div><label class="l">סוג רכב</label>
+        <select id="vtype"><option value="">—</option><option value="private">פרטי</option><option value="commercial">מסחרי</option><option value="other">אחר</option></select></div>
+      <div><label class="l">שם יצרן</label><input id="maker"></div>
+      <div><label class="l">דגם</label><input id="model"></div>
+      <div><label class="l">שנת ייצור</label><input id="year" class="ltr" inputmode="numeric" maxlength="4"></div>
+      <div><label class="l">רשום על שם</label><input id="regTo">
+        <label class="chk"><input type="checkbox" id="regSame" checked> כמו שם המבוטח</label></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>שליחה למבוטח</h2>
+    <button class="btn primary big" id="btnLink">🔗 צור קישור למילוי אונליין</button>
+    <div id="linkArea" class="hidden" style="margin-top:14px">
+      <div class="linkbox" id="linkBox"></div>
+      <div class="actions" style="margin-top:10px">
+        <a class="btn wa" id="btnWa" target="_blank" rel="noopener" style="text-decoration:none">שלח בוואטסאפ</a>
+        <a class="btn sec" id="btnMail" style="text-decoration:none">✉ שלח במייל</a>
+        <button class="btn sec" id="btnCopyMsg">העתק הודעה + קישור</button>
+        <button class="btn sec" id="btnOpen">פתח את הטופס לבדיקה</button>
+      </div>
+    </div>
+    <div class="msg" id="msg"></div>
+    <h3>או: PDF למילוי ידני</h3>
+    <button class="btn sec" id="btnDl">⬇ הורד PDF עם הפרטים שלך</button>
+    <p class="note">הפרטים נשמרים בתוך הקישור עצמו ולא בשום שרת. מי שמחזיק בקישור רואה אותם, לכן שולחים אותו רק למבוטח.</p>
+  </div>
+</main>
+<script src="assets/pdf-lib.min.js"></script>
+<script src="assets/fontkit.umd.min.js"></script>
+<script src="assets/common.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const FIELDS=['policy','eventDate','name','idno','address','mobile','email','plate','vtype','maker','model','year','regTo'];
+function data(){
+  const d={}; FIELDS.forEach(k=>d[k]=$(k).value.trim());
+  if($('regSame').checked) d.regTo=d.name;
+  d.agent=[$('agentName').value.trim(),$('agentNo').value.trim()].filter(Boolean).join(' ');
+  d.agentName=$('agentName').value.trim();
+  d.idno=d.idno.replace(/\D/g,'');
+  Object.keys(d).forEach(k=>{ if(!d[k]) delete d[k]; });
+  return d;
+}
+const msg=(t,c)=>{$('msg').textContent=t;$('msg').className='msg '+(c||'');};
+function syncReg(){ $('regTo').disabled=$('regSame').checked; if($('regSame').checked) $('regTo').value=$('name').value; $('linkArea').classList.add('hidden'); }
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',syncReg));
+$('regSame').addEventListener('change',syncReg); syncReg();
+
+function waNumber(m){ let n=(m||'').replace(/\D/g,''); if(n.startsWith('0')) n='972'+n.slice(1); return n; }
+function clientMsg(d,link){
+  return `שלום ${d.name},
+לפתיחת התביעה בפוליסה ${d.policy} מול הפניקס, נא למלא את הטופס בקישור הבא (כ-5 דקות), לחתום בסוף וללחוץ "שלח לאייל":
+${link}
+
+בנוסף, נא לשלוח לי כאן צילום של רישיון נהיגה, רישיון רכב ות.ז. של הנהג.
+
+${d.agentName||'אייל חן'} – סוכן ביטוח
+050-646-1614`;
+}
+$('btnLink').onclick=()=>{
+  const d=data();
+  if(!d.policy||!d.name){ msg("חובה למלא מס' פוליסה ושם מבוטח",'err'); return; }
+  const link=new URL('form.html',location.href).href.split('#')[0]+'#d='+encodeData(d);
+  $('linkBox').textContent=link; $('linkArea').classList.remove('hidden');
+  const text=clientMsg(d,link);
+  const n=waNumber(d.mobile);
+  $('btnWa').href=`https://wa.me/${n}?text=${encodeURIComponent(text)}`;
+  $('btnMail').href=`mailto:${encodeURIComponent(d.email||'')}?subject=${encodeURIComponent('הודעה על מקרה ביטוח רכב – פוליסה '+d.policy)}&body=${encodeURIComponent(text)}`;
+  $('btnCopyMsg').onclick=async()=>{ try{await navigator.clipboard.writeText(text); msg('ההודעה הועתקה','ok');}catch(e){msg('לא הצלחתי להעתיק – סמן את הקישור והעתק ידנית','err');} };
+  $('btnOpen').onclick=()=>window.open(link,'_blank');
+  msg(n?'הקישור מוכן':'הקישור מוכן. לא הוזן נייד, אז בוואטסאפ תבחר את איש הקשר בעצמך.','ok');
+};
+$('btnDl').onclick=async()=>{
+  const d=data(); if(!d.policy||!d.name){ msg("חובה למלא מס' פוליסה ושם מבוטח",'err'); return; }
+  try{
+    const f=await loadForm(); fillAgent(f,d);
+    const bytes=await f.doc.save(); const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'})); a.download=`הודעה על מקרה ביטוח - ${d.name}.pdf`;
+    document.body.appendChild(a); a.click(); a.remove(); msg('הקובץ ירד','ok');
+  }catch(e){ msg('שגיאה: '+e.message,'err'); }
+};
+</script>
+</body>
+</html>

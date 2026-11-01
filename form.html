@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>הודעה על מקרה ביטוח רכב</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>הודעה על מקרה ביטוח – רכב</h1>
+  <p id="hdr">ממלאים, חותמים בסוף ולוחצים "שלח". לוקח כ-5 דקות.</p>
+</header>
+<main id="app">
+  <div class="card hidden" id="bad"><h2>הקישור לא תקין</h2><p>נא לפנות לסוכן ולבקש קישור חדש.</p></div>
+
+  <div id="formWrap" class="hidden">
+  <div class="card">
+    <h2>א. פרטי המבוטח והפוליסה</h2>
+    <div class="sum" id="summary"></div>
+    <div class="grid" id="missing" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h2>ב. פרטי הנהג</h2>
+    <label class="chk"><input type="checkbox" id="drvIsInsured" checked> אני (המבוטח) נהגתי ברכב</label>
+    <div class="grid">
+      <div class="drvx"><label class="l">שם הנהג <b>*</b></label><input id="drvName"></div>
+      <div class="drvx"><label class="l">ת.ז. הנהג</label><input id="drvId" class="ltr" inputmode="numeric" maxlength="9"></div>
+      <div class="drvx full"><label class="l">כתובת הנהג</label><input id="drvAddress"></div>
+      <div class="drvx"><label class="l">טלפון נייד של הנהג</label><input id="drvPhone" class="ltr" inputmode="tel"></div>
+      <div class="drvx"><label class="l">הקשר / קרבה למבוטח</label><input id="drvRelation" placeholder="למשל: בן, בת זוג, עובד"></div>
+      <div><label class="l">תאריך לידה של הנהג</label><input id="drvBirth" type="date"></div>
+      <div><label class="l">מס' רישיון נהיגה</label><input id="drvLicense" class="ltr" inputmode="numeric"></div>
+      <div class="drvx full"><label class="l">האם הנהג נהג ברשות המבוטח?</label><div class="seg" data-k="drvPermission" data-v="yes"><button data-o="yes">כן</button><button data-o="no">לא</button></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>ג. פרטי האירוע</h2>
+    <div class="grid">
+      <div><label class="l">תאריך המקרה <b>*</b></label><input id="evDate" type="date"></div>
+      <div><label class="l">שעת המקרה</label><input id="evTime" type="time"></div>
+      <div class="full"><label class="l">מקום התאונה / כתובת <b>*</b></label><input id="evPlace" placeholder="רחוב, עיר / כביש"></div>
+      <div class="full"><label class="l">האם הובא לידיעת המשטרה?</label><div class="seg" data-k="police" data-v="no"><button data-o="yes">כן</button><button data-o="no">לא</button></div></div>
+      <div class="full hidden" id="stationWrap"><label class="l">שם תחנת המשטרה</label><input id="policeStation"></div>
+      <div class="full"><label class="l">מי לדעתך אשם בתאונה?</label><div class="seg" data-k="fault"><button data-o="me">אני</button><button data-o="third">נהג צד ג'</button><button data-o="unknown">לא יודע</button></div></div>
+      <div class="full"><label class="l">תיאור מפורט של המקרה <b>*</b></label><textarea id="description" placeholder="מה קרה, לאן נסעת, איך קרתה הפגיעה, מה נפגע ברכב"></textarea>
+        <div class="note" id="descCount"></div></div>
+      <div><label class="l">התמרור / רמזור בכיוון שלך</label><input id="signInsured" placeholder="למשל: רמזור ירוק, עצור"></div>
+      <div><label class="l">התמרור / רמזור בכיוון של צד ג'</label><input id="signThird"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>ד. רכב צד ג'</h2>
+    <label class="chk"><input type="checkbox" id="hasThird"> היה מעורב רכב נוסף</label>
+    <div id="thirdWrap"></div>
+    <button class="btn sec hidden" id="addThird" style="margin-top:10px">+ רכב נוסף</button>
+  </div>
+
+  <div class="card">
+    <h2>ה. נפגעים</h2>
+    <label class="chk"><input type="checkbox" id="hasInjured"> היו נפגעים בגוף</label>
+    <div id="injWrap"></div>
+    <button class="btn sec hidden" id="addInj" style="margin-top:10px">+ נפגע נוסף</button>
+    <h3>שאלות נוספות</h3>
+    <div id="questions"></div>
+  </div>
+
+  <div class="card">
+    <h2>ו. עדים</h2>
+    <label class="chk"><input type="checkbox" id="hasWit"> היו עדים למקרה</label>
+    <div id="witWrap"></div>
+    <div id="witRelWrap" class="hidden" style="margin-top:10px"><label class="l">מה הקשר של העדים לאירוע?</label><input id="witnessRelation" placeholder="למשל: עוברי אורח, נוסע ברכב"></div>
+    <button class="btn sec hidden" id="addWit" style="margin-top:10px">+ עד נוסף</button>
+  </div>
+
+  <div class="card">
+    <h2>הצהרה וחתימה</h2>
+    <p class="note">הנני מצהיר כי כל הפרטים שמסרתי נכונים ומדויקים ולא העלמתי כל עובדה ופרט בקשר לתאונה. אני מסכים כי פרטי הרכב המצויים במאגר כלי הרכב של משרד התחבורה יועברו לחברת הביטוח, לאיגוד חברות הביטוח ולמאגר המידע המנוהל על ידו, בהתאם לנוסח המלא בטופס הפניקס.</p>
+    <label class="l">חתימת המבוטח <b>*</b></label>
+    <canvas class="sig" id="sig1"></canvas>
+    <button class="btn sec" data-clear="sig1" style="margin-top:6px">נקה חתימה</button>
+    <div id="ownerSigWrap" class="hidden" style="margin-top:14px">
+      <label class="l">חתימת בעל הרכב (<span id="ownerName"></span>) <b>*</b></label>
+      <canvas class="sig" id="sig2"></canvas>
+      <button class="btn sec" data-clear="sig2" style="margin-top:6px">נקה חתימה</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <button class="btn primary big" id="btnMake">✔ סיום – יצירת הטופס</button>
+    <div class="msg" id="msg"></div>
+    <div id="done" class="hidden" style="margin-top:12px">
+      <button class="btn wa big" id="btnShare">שלח לאייל בוואטסאפ</button>
+      <div class="actions" style="margin-top:10px"><button class="btn sec" id="btnDl">⬇ הורד את הטופס</button></div>
+      <p class="note" id="doneNote"></p>
+    </div>
+  </div>
+  </div>
+</main>
+<script src="assets/pdf-lib.min.js"></script>
+<script src="assets/fontkit.umd.min.js"></script>
+<script src="assets/common.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const AGENT_WA='972506461614';
+let A=null;
+try{ const m=location.hash.match(/d=([^&]+)/); A=decodeData(m[1]); if(!A.policy||!A.name) throw 0; }catch(e){ A=null; }
+
+function el(html){ const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild; }
+function field(label,key,cls='',attrs=''){ return `<div class="${cls}"><label class="l">${label}</label><input data-f="${key}" ${attrs}></div>`; }
+
+// segmented yes/no buttons
+const SEG={};
+function bindSeg(box){
+  const k=box.dataset.k; if(box.dataset.v) SEG[k]=box.dataset.v;
+  const paint=()=>box.querySelectorAll('button').forEach(b=>b.classList.toggle('on',SEG[k]===b.dataset.o));
+  box.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.preventDefault(); SEG[k]=b.dataset.o; paint(); box.dispatchEvent(new Event('segchange'));});
+  paint();
+}
+
+function init(){
+  $('hdr').textContent=`שלום ${A.name}, זה הטופס לפתיחת התביעה בפוליסה ${A.policy}. ממלאים, חותמים ולוחצים "שלח". לוקח כ-5 דקות.`;
+  const vt={private:'פרטי',commercial:'מסחרי',other:'אחר'}[A.vtype]||'';
+  const rows=[['מבוטח',A.name],['פוליסה',A.policy],['ת.ז.',A.idno],['רכב',[A.plate,A.maker,A.model,A.year,vt].filter(Boolean).join(' · ')],['סוכן',A.agent]];
+  $('summary').innerHTML=rows.filter(r=>r[1]).map(r=>`<span>${r[0]}</span><span>${esc(r[1])}</span>`).join('');
+  const miss=[['idno','ת.ז. המבוטח','class="ltr" inputmode="numeric" maxlength="9"'],['address','כתובת',''],['mobile','טלפון נייד','class="ltr" inputmode="tel"'],['email','דוא"ל','class="ltr" type="email"'],['plate','מספר רישוי של הרכב','class="ltr"']];
+  miss.filter(m=>!A[m[0]]).forEach(m=>$('missing').appendChild(el(`<div><label class="l">${m[1]}</label><input id="ins_${m[0]}" ${m[2]}></div>`)));
+  if(A.eventDate) $('evDate').value=A.eventDate;
+
+  document.querySelectorAll('.seg[data-k]').forEach(bindSeg);
+  document.querySelector('.seg[data-k="police"]').addEventListener('segchange',()=>$('stationWrap').classList.toggle('hidden',SEG.police!=='yes'));
+  const drv=()=>document.querySelectorAll('.drvx').forEach(x=>x.classList.toggle('hidden',$('drvIsInsured').checked));
+  $('drvIsInsured').onchange=drv; drv();
+  $('description').oninput=()=>{ const n=$('description').value.length; $('descCount').textContent=n>450?'הטקסט ארוך – בטופס הוא יודפס בכתב קטן יותר':''; };
+
+  // third parties
+  const thirdHtml=i=>`<div class="sub" data-third><h3 style="margin-top:0">רכב צד ג' ${i}</h3><div class="grid">
+    ${field('מספר רישוי','plate','','class="ltr"')}${field('שם יצרן','maker')}
+    ${field('צבע','color')}${field('שנת ייצור','year','','class="ltr" inputmode="numeric"')}
+    ${field('חברה מבטחת','insurer')}${field('מספר פוליסה','policy','','class="ltr"')}
+    ${field('שם הנהג','driverName')}${field('ת.ז. הנהג','driverId','','class="ltr" inputmode="numeric"')}
+    ${field('טלפון הנהג','driverPhone','','class="ltr" inputmode="tel"')}${field('כתובת הנהג','driverAddress')}
+    <div class="full"><label class="chk"><input type="checkbox" data-f="sameOwner" checked> בעל הרכב הוא הנהג</label></div>
+    ${field('שם בעל הרכב','ownerName','owner hidden')}${field('ת.ז. בעל הרכב','ownerId','owner hidden','class="ltr" inputmode="numeric"')}
+    ${field('טלפון בעל הרכב','ownerPhone','owner hidden','class="ltr" inputmode="tel"')}${field('כתובת בעל הרכב','ownerAddress','owner hidden')}
+  </div></div>`;
+  const addThird=()=>{ const n=$('thirdWrap').children.length; if(n>=2) return; const b=el(thirdHtml(n+1)); $('thirdWrap').appendChild(b);
+    const c=b.querySelector('[data-f=sameOwner]'); c.onchange=()=>b.querySelectorAll('.owner').forEach(x=>x.classList.toggle('hidden',c.checked));
+    $('addThird').classList.toggle('hidden',n+1>=2); };
+  $('hasThird').onchange=()=>{ if($('hasThird').checked){ if(!$('thirdWrap').children.length) addThird(); $('thirdWrap').classList.remove('hidden'); $('addThird').classList.toggle('hidden',$('thirdWrap').children.length>=2);} else { $('thirdWrap').classList.add('hidden'); $('addThird').classList.add('hidden'); } };
+  $('addThird').onclick=e=>{e.preventDefault(); addThird();};
+
+  // injured
+  let injN=0;
+  const addInj=()=>{ if(injN>=3) return; injN++; const b=el(`<div class="sub" data-inj><h3 style="margin-top:0">נפגע ${injN}</h3><div class="grid">
+    ${field('שם הנפגע','name')}${field('ת.ז.','id','','class="ltr" inputmode="numeric"')}
+    ${field('כתובת','address')}${field('טלפון','phone','','class="ltr" inputmode="tel"')}
+    ${field('מהות הפגיעה','nature')}${field('אשפוז (שם בית החולים)','hospital')}
+    <div class="full"><label class="l">הנפגע היה</label><div class="seg" data-k="injRole${injN}"><button data-o="walker">הולך רגל / אופניים</button><button data-o="inCar">נוסע/נוהג ברכב שלי</button><button data-o="otherCar">ברכב אחר</button></div></div>
+  </div></div>`); b.dataset.n=injN; $('injWrap').appendChild(b); bindSeg(b.querySelector('.seg')); $('addInj').classList.toggle('hidden',injN>=3); };
+  $('hasInjured').onchange=()=>{ if($('hasInjured').checked){ if(!injN) addInj(); $('injWrap').classList.remove('hidden'); $('addInj').classList.toggle('hidden',injN>=3);} else { $('injWrap').classList.add('hidden'); $('addInj').classList.add('hidden'); } };
+  $('addInj').onclick=e=>{e.preventDefault(); addInj();};
+
+  const Q=[['qWork','האם התאונה הייתה תוך כדי עבודה?'],['qToWork','בדרך לעבודה?'],['qFromWork','בחזרה מהעבודה?'],['qTruck','מעורבת משאית?'],['qMoto','מעורב אופנוע?'],['qTrailer','מעורב נגרר?'],['qPaid','האם הייתה הסעה בשכר?'],['qParked','מעורב רכב חונה?']];
+  Q.forEach(([k,t])=>{ const r=el(`<div class="q"><span>${t}</span><div class="seg" data-k="${k}" data-v="no"><button data-o="yes">כן</button><button data-o="no">לא</button></div></div>`); $('questions').appendChild(r); bindSeg(r.querySelector('.seg')); });
+  [['qTrailer','trailerPlate','מספר רישוי של הנגרר'],['qParked','parkedPlate','מספר רישוי של הרכב החונה']].forEach(([k,id,lab])=>{
+    const box=document.querySelector(`.seg[data-k="${k}"]`); const w=el(`<div class="hidden" style="padding:0 0 8px"><label class="l">${lab}</label><input id="${id}" class="ltr"></div>`);
+    box.closest('.q').after(w); box.addEventListener('segchange',()=>w.classList.toggle('hidden',SEG[k]!=='yes')); });
+
+  // witnesses
+  let witN=0;
+  const addWit=()=>{ if(witN>=2) return; witN++; $('witWrap').appendChild(el(`<div class="sub" data-wit><h3 style="margin-top:0">עד ${witN}</h3><div class="grid">
+    ${field('שם','name')}${field('טלפון','phone','','class="ltr" inputmode="tel"')}${field('כתובת','address')}${field('ת.ז.','id','','class="ltr" inputmode="numeric"')}</div></div>`)); $('addWit').classList.toggle('hidden',witN>=2); };
+  $('hasWit').onchange=()=>{ const on=$('hasWit').checked; if(on&&!witN) addWit(); ['witWrap','witRelWrap'].forEach(i=>$(i).classList.toggle('hidden',!on)); $('addWit').classList.toggle('hidden',!on||witN>=2); };
+  $('addWit').onclick=e=>{e.preventDefault(); addWit();};
+
+  // owner signature if vehicle registered to someone else
+  if(A.regTo && A.regTo.trim()!==A.name.trim()){ $('ownerSigWrap').classList.remove('hidden'); $('ownerName').textContent=A.regTo; }
+  sigPad('sig1'); sigPad('sig2');
+  document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=e=>{e.preventDefault(); PADS[b.dataset.clear].clear();});
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// signature pads
+const PADS={};
+function sigPad(id){
+  const c=$(id), ctx=c.getContext('2d'); let drawing=false, used=false, last=null;
+  const fit=()=>{ const r=c.getBoundingClientRect(); if(!r.width) return; const dpr=window.devicePixelRatio||1; const keep=used?c.toDataURL():null;
+    c.width=r.width*dpr; c.height=r.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#0d1f73';
+    if(keep){ const im=new Image(); im.onload=()=>ctx.drawImage(im,0,0,r.width,r.height); im.src=keep; } };
+  const pos=e=>{ const r=c.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+  c.addEventListener('pointerdown',e=>{ e.preventDefault(); if(!c.width) fit(); drawing=true; used=true; last=pos(e); c.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.arc(last.x,last.y,1.1,0,7); ctx.fillStyle='#0d1f73'; ctx.fill(); });
+  c.addEventListener('pointermove',e=>{ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; });
+  ['pointerup','pointercancel','pointerleave'].forEach(t=>c.addEventListener(t,()=>drawing=false));
+  window.addEventListener('resize',fit); setTimeout(fit,50);
+  PADS[id]={ clear(){ const r=c.getBoundingClientRect(); ctx.clearRect(0,0,r.width,r.height); used=false; }, isEmpty:()=>!used, png(){ return used?trimmed(c):null; } };
+}
+function trimmed(c){ // crop to drawn area
+  const ctx=c.getContext('2d'), {width:w,height:h}=c, d=ctx.getImageData(0,0,w,h).data; let x0=w,y0=h,x1=0,y1=0;
+  for(let y=0;y<h;y+=2) for(let x=0;x<w;x+=2){ if(d[(y*w+x)*4+3]>10){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; } }
+  if(x1<=x0) return null; const p=6; x0=Math.max(0,x0-p); y0=Math.max(0,y0-p); x1=Math.min(w,x1+p); y1=Math.min(h,y1+p);
+  const o=document.createElement('canvas'); o.width=x1-x0; o.height=y1-y0; o.getContext('2d').drawImage(c,x0,y0,o.width,o.height,0,0,o.width,o.height); return o.toDataURL('image/png');
+}
+
+function collect(){
+  const v=id=>($(id)?$(id).value.trim():'');
+  const ins={...A}; ['idno','address','mobile','email','plate'].forEach(k=>{ if(!ins[k] && $('ins_'+k)) ins[k]=v('ins_'+k); });
+  const self=$('drvIsInsured').checked;
+  const c={
+    drvName:self?ins.name:v('drvName'), drvId:self?ins.idno:v('drvId'), drvAddress:self?ins.address:v('drvAddress'), drvPhone:self?ins.mobile:v('drvPhone'),
+    drvRelation:self?'המבוטח':v('drvRelation'), drvBirth:v('drvBirth'), drvLicense:v('drvLicense'), drvPermission:self?'yes':SEG.drvPermission,
+    evDate:v('evDate'), evTime:v('evTime'), evPlace:v('evPlace'), police:SEG.police, policeStation:SEG.police==='yes'?v('policeStation'):'',
+    fault:SEG.fault, description:v('description'), signInsured:v('signInsured'), signThird:v('signThird'),
+    third:[], injured:[], witnesses:[], witnessRelation:'',
+    sigInsured:PADS.sig1.png(), sigOwner:$('ownerSigWrap').classList.contains('hidden')?null:PADS.sig2.png(),
+    signDate:new Date().toLocaleDateString('en-GB')
+  };
+  ['qWork','qToWork','qFromWork','qTruck','qMoto','qTrailer','qPaid','qParked'].forEach(k=>c[k]=SEG[k]);
+  c.trailerPlate=SEG.qTrailer==='yes'?v('trailerPlate'):''; c.parkedPlate=SEG.qParked==='yes'?v('parkedPlate'):'';
+  const grab=b=>{ const o={}; b.querySelectorAll('[data-f]').forEach(i=>o[i.dataset.f]=i.type==='checkbox'?i.checked:i.value.trim()); return o; };
+  if($('hasThird').checked) document.querySelectorAll('[data-third]').forEach(b=>{ const t=grab(b); if(t.sameOwner){ t.ownerName=t.driverName; t.ownerId=t.driverId; t.ownerPhone=t.driverPhone; t.ownerAddress=t.driverAddress; } c.third.push(t); });
+  if($('hasInjured').checked) document.querySelectorAll('[data-inj]').forEach(b=>{ const p=grab(b); p.role=SEG['injRole'+b.dataset.n]; c.injured.push(p); });
+  if($('hasWit').checked){ document.querySelectorAll('[data-wit]').forEach(b=>c.witnesses.push(grab(b))); c.witnessRelation=v('witnessRelation');
+    c.witnessSummary=c.witnesses.filter(w=>w.name).map(w=>[w.name,w.phone].filter(Boolean).join(' ')).join(', '); }
+  return {ins,c};
+}
+function validate(ins,c){
+  const errs=[];
+  if(!c.drvName) errs.push('שם הנהג');
+  if(!c.evDate) errs.push('תאריך המקרה');
+  if(!c.evPlace) errs.push('מקום התאונה');
+  if(!c.description) errs.push('תיאור המקרה');
+  if(!c.sigInsured) errs.push('חתימת המבוטח');
+  if(!$('ownerSigWrap').classList.contains('hidden') && !c.sigOwner) errs.push('חתימת בעל הרכב');
+  return errs;
+}
+
+const msg=(t,cl)=>{$('msg').textContent=t;$('msg').className='msg '+(cl||'');};
+let FILE=null;
+$('btnMake').onclick=async e=>{
+  e.preventDefault();
+  const {ins,c}=collect(); const errs=validate(ins,c);
+  if(errs.length){ msg('חסר: '+errs.join(', '),'err'); return; }
+  $('btnMake').disabled=true; msg('יוצר את הטופס…');
+  try{
+    const f=await loadForm(); fillAgent(f,{...ins,eventDate:''}); await fillClient(f,c);
+    f.doc.setTitle('הודעה על מקרה ביטוח רכב - '+ins.name);
+    const bytes=await f.doc.save();
+    FILE=new File([bytes],`הודעה על מקרה ביטוח - ${ins.name}.pdf`,{type:'application/pdf'});
+    msg('הטופס מוכן ✓','ok'); $('done').classList.remove('hidden');
+    const canShare=navigator.canShare&&navigator.canShare({files:[FILE]});
+    $('btnShare').textContent=canShare?'שלח לאייל בוואטסאפ':'פתח וואטסאפ לאייל';
+    $('doneNote').textContent=canShare?'בחלון השיתוף בחרו בוואטסאפ ואז את איש הקשר של הסוכן.':'במכשיר הזה אי אפשר לצרף קובץ אוטומטית: הורידו את הטופס, ואז שלחו אותו לסוכן בוואטסאפ כקובץ מצורף.';
+    $('done').scrollIntoView({behavior:'smooth'});
+  }catch(err){ msg('שגיאה ביצירת הטופס: '+err.message,'err'); }
+  $('btnMake').disabled=false;
+};
+$('btnShare').onclick=async e=>{
+  e.preventDefault(); if(!FILE) return;
+  if(navigator.canShare&&navigator.canShare({files:[FILE]})){
+    try{ await navigator.share({files:[FILE],title:FILE.name}); msg('נשלח ✓ תודה!','ok'); }catch(err){ if(err.name!=='AbortError') msg('השיתוף נכשל – אפשר להוריד ולשלוח ידנית','err'); }
+  } else { download(); window.open(`https://wa.me/${AGENT_WA}?text=${encodeURIComponent('שלום אייל, מילאתי את טופס ההודעה על מקרה הביטוח. מצרף את הקובץ.')}`,'_blank'); }
+};
+function download(){ const a=document.createElement('a'); a.href=URL.createObjectURL(FILE); a.download=FILE.name; document.body.appendChild(a); a.click(); a.remove(); }
+$('btnDl').onclick=e=>{ e.preventDefault(); if(FILE) download(); };
+if(!A){ $('bad').classList.remove('hidden'); }
+else { $('formWrap').classList.remove('hidden'); init(); }
+</script>
+</body>
+</html>
