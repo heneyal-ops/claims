@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>חברי השנה – הצבעה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#120d2b; --bg2:#2a1f5c; --gold:#f7c948; --gold2:#ffb703; --ink:#fff; --muted:#b9b3d9;
+  --card:rgba(255,255,255,.07); --line:rgba(255,255,255,.12); --ok:#3ddc97; --bad:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%;background-color:var(--bg1)}
+body{background-color:var(--bg1);background-image:radial-gradient(circle at 20% 0%,#3b2a85 0%,transparent 55%),linear-gradient(160deg,var(--bg1),var(--bg2));background-repeat:no-repeat}
+body{font-family:'Rubik',system-ui,sans-serif;color:var(--ink);min-height:100vh;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;border:0;color:inherit;background:none}
+input{font:inherit;color:var(--ink)}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 60px}
+.brand{text-align:center;margin:10px 0 22px}
+.brand .trophy{font-size:44px}
+.brand h1{font-size:30px;font-weight:900;background:linear-gradient(90deg,var(--gold),#fff1b8,var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand p{color:var(--muted);margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px;backdrop-filter:blur(6px)}
+.card h2{font-size:18px;margin-bottom:12px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.center{text-align:center}
+.btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1b1340;font-weight:700;padding:13px 18px;border-radius:14px;font-size:16px;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn.danger{background:transparent;border:1px solid rgba(255,107,107,.5);color:var(--bad);font-weight:500}
+.btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
+.btn.block{width:100%}
+.row{display:flex;gap:8px;align-items:center}
+.row.wrapr{flex-wrap:wrap}
+.grow{flex:1}
+.field{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px;outline:none}
+.field:focus{border-color:var(--gold)}
+.codein{text-align:center;font-size:32px;letter-spacing:10px;font-weight:700}
+.hello{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.hello b{font-size:18px}
+.catHead{text-align:center;margin:6px 0 16px}
+.catHead .emo{font-size:64px;line-height:1.1}
+.catHead h2{font-size:28px;font-weight:900}
+.cands{display:grid;gap:10px}
+.cand{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;font-size:20px;font-weight:700;text-align:right;width:100%}
+.cand .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:18px;background:rgba(255,255,255,.12);flex:none}
+.cand.sel{border-color:var(--gold);background:rgba(247,201,72,.15)}
+.cand .chk{margin-inline-start:auto;font-size:22px;opacity:0}
+.cand.sel .chk{opacity:1}
+.wait{text-align:center;padding:40px 10px}
+.wait .big{font-size:70px;margin-bottom:10px}
+.wait h2{font-size:24px;margin-bottom:6px}
+.pulse{animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.tabs{display:flex;gap:6px;background:rgba(0,0,0,.25);padding:5px;border-radius:14px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px 6px;border-radius:10px;font-weight:500;color:var(--muted);font-size:14px}
+.tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.b-open{background:rgba(61,220,151,.18);color:var(--ok)}
+.b-closed{background:rgba(255,183,3,.18);color:var(--gold2)}
+.b-rev{background:rgba(247,201,72,.25);color:var(--gold)}
+.b-idle{background:rgba(255,255,255,.1);color:var(--muted)}
+.list{display:grid;gap:8px}
+.li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.18)}
+.li .emo{font-size:22px}
+.progress{height:10px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin:8px 0 4px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--gold));transition:width .4s}
+.bar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:14px}
+.bar .nm{width:110px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .tr{flex:1;height:14px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:var(--gold)}
+.bar .n{width:22px;text-align:left;font-weight:700}
+.ed{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.ed .field{padding:9px 10px;font-size:15px}
+.ed .emoin{width:52px;text-align:center;flex:none}
+.code{font-family:ui-monospace,monospace;font-weight:700;color:var(--gold);letter-spacing:2px;background:rgba(0,0,0,.3);padding:6px 10px;border-radius:8px}
+.ibtn{background:rgba(255,255,255,.08);border-radius:10px;width:38px;height:38px;flex:none;font-size:16px}
+.ibtn.armed{background:var(--bad);color:#fff}
+.btn.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
+.qr{background:#fff;border-radius:14px;padding:10px;display:inline-block}
+.qr svg{display:block;width:100%;height:auto}
+#toast{opacity:0;position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#fff;color:#1b1340;padding:10px 18px;border-radius:99px;font-weight:700;transition:transform .25s;z-index:50}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#demobar{position:sticky;top:0;z-index:40;background:#ffb703;color:#1b1340;font-size:13px;padding:7px 10px;display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap}
+#demobar a{color:#1b1340;font-weight:700;background:rgba(255,255,255,.5);padding:3px 10px;border-radius:99px;text-decoration:none}
+#demobar a.on{background:#1b1340;color:#fff}
+.err{color:var(--bad);font-size:14px;margin-top:8px;min-height:18px}
+
+/* ---------- TV ---------- */
+body.tv{overflow:hidden}
+.tvw{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3vh 4vw;position:relative}
+.tv-top{position:absolute;top:2.5vh;left:0;right:0;font-size:2.2vw;font-weight:900;color:var(--gold);letter-spacing:.05em}
+.tv-emo{font-size:14vh;line-height:1}
+.tv-title{font-size:8vh;font-weight:900;margin:2vh 0}
+.tv-sub{font-size:3.6vh;color:var(--muted)}
+.tv-count{font-size:12vh;font-weight:900;color:var(--gold);line-height:1}
+.tv-chips{display:flex;flex-wrap:wrap;gap:1.2vh;justify-content:center;margin-top:4vh;max-width:85vw}
+.tv-chip{padding:1.2vh 2.4vh;border-radius:99px;font-size:2.6vh;background:rgba(255,255,255,.07);color:var(--muted);transition:all .4s}
+.tv-chip.on{background:var(--ok);color:#06301f;font-weight:700;transform:scale(1.05)}
+.tv-winner{font-size:13vh;font-weight:900;line-height:1.05;background:linear-gradient(90deg,var(--gold),#fff6cf,var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent;animation:pop .9s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.2);opacity:0}100%{transform:scale(1);opacity:1}}
+.tv-bars{width:min(70vw,900px);margin-top:4vh}
+.tv-bars .bar{font-size:2.6vh;margin:1vh 0}
+.tv-bars .bar .nm{width:22vw}
+.tv-bars .bar .tr{height:2.4vh}
+.tv-bars .bar .n{width:4vw}
+.tv-drum{font-size:16vh;animation:shake .25s infinite}
+@keyframes shake{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.tv-hof{display:flex;flex-wrap:wrap;gap:2vh;justify-content:center;margin-top:5vh}
+.tv-hof .h{background:rgba(255,255,255,.07);border-radius:2vh;padding:1.6vh 2.4vh;font-size:2.4vh}
+.tv-hof .h b{color:var(--gold);display:block;font-size:3vh}
+.tv-qr{width:24vh;margin-top:3vh}
+.fsbtn{position:absolute;bottom:2vh;left:2vh;opacity:.35;font-size:14px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.1)}
+.fsbtn:hover{opacity:1}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+</style>
+</head>
+<body>
+<div id="demobar" hidden></div>
+<main id="app"><div class="wrap"><div class="wait"><div class="big pulse">🏆</div><p class="muted">טוען…</p></div></div></main>
+<div id="toast"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* =====================================================
+   הגדרות — זה החלק היחיד שצריך לערוך
+   ===================================================== */
+const FIREBASE_CONFIG = {       // ← ההגדרות מ-Firebase (פרויקט chaverey-hashana). null = מצב הדגמה
+  apiKey: "AIzaSyAGE2h0G6C5h7oOhg9l-MGKRvPSWt98rnw",
+  authDomain: "chaverey-hashana.firebaseapp.com",
+  databaseURL: "https://chaverey-hashana-default-rtdb.firebaseio.com",
+  projectId: "chaverey-hashana",
+  storageBucket: "chaverey-hashana.firebasestorage.app",
+  messagingSenderId: "557541005848",
+  appId: "1:557541005848:web:1a5bfdeafa36e5f3b1416d"
+};
+const ADMIN_PIN   = "2026";     // ← קוד הכניסה למסך המנהל
+const EVENT_TITLE = "חברי השנה";
+const EVENT_YEAR  = "2026";
+/* ===================================================== */
+
+const ROOT = "fy";
+const SEED_MEMBERS = ["לירון היימן","ערן נקש","דודי שחק"];
+const SEED_CATS = [["🏄","גולש השנה"],["🤔","שכחן השנה"],["😎","חתיך השנה"]];
+
+let S = {};            // כל הנתונים המשותפים
+let loaded = false;
+let adminTab = "live";
+let pendingRender = false;
+const DEMO = !FIREBASE_CONFIG;
+
+/* ---------- עזרים ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ls = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { v==null ? localStorage.removeItem(k) : localStorage.setItem(k,v); } catch(e){} }
+};
+const ss = {
+  get(k){ try { return sessionStorage.getItem(k); } catch(e){ return memSS[k]; } },
+  set(k,v){ try { sessionStorage.setItem(k,v); } catch(e){ memSS[k]=v; } }
+};
+const memSS = {};
+const newId = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),1800); }
+function initials(n){ return (n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join(""); }
+
+function members(){
+  const m = (S.setup && S.setup.members) || {};
+  return Object.entries(m).map(([id,v]) => ({id, ...v})).sort((a,b)=>(a.order||0)-(b.order||0));
+}
+function cats(){
+  const c = (S.setup && S.setup.categories) || {};
+  return Object.entries(c).map(([id,v]) => ({id, ...v})).sort((a,b)=>(a.order||0)-(b.order||0));
+}
+const member = id => members().find(m=>m.id===id);
+const cat = id => cats().find(c=>c.id===id);
+const state = () => S.state || {phase:"idle"};
+const votesFor = cid => (S.votes && S.votes[cid]) || {};
+const isRevealed = cid => !!(S.revealed && S.revealed[cid]);
+function tally(cid){
+  const ids = new Set(members().map(m=>m.id));
+  const counts = {};
+  Object.entries(votesFor(cid)).forEach(([voter,cand]) => {
+    if (ids.has(voter) && ids.has(cand) && voter!==cand) counts[cand]=(counts[cand]||0)+1;
+  });
+  return Object.entries(counts).map(([id,n])=>({id,n,name:member(id).name})).sort((a,b)=>b.n-a.n);
+}
+function winners(cid){ const t=tally(cid); if(!t.length) return []; return t.filter(x=>x.n===t[0].n); }
+function votedCount(cid){ const ids=new Set(members().map(m=>m.id)); return Object.keys(votesFor(cid)).filter(v=>ids.has(v)).length; }
+function genCode(){
+  const used = new Set(members().map(m=>m.code));
+  let c; do { c = String(Math.floor(1000+Math.random()*9000)); } while(used.has(c));
+  return c;
+}
+function baseUrl(){ return location.href.split("#")[0]; }
+
+/* ---------- אחסון: Firebase או הדגמה מקומית ---------- */
+const Store = { set(){}, ready:false };
+
+function setIn(obj, path, val){
+  const parts = path.split("/"); let o = obj;
+  for (let i=0;i<parts.length-1;i++){ if (typeof o[parts[i]]!=="object" || o[parts[i]]===null) o[parts[i]]={}; o=o[parts[i]]; }
+  const k = parts[parts.length-1];
+  if (val===null || val===undefined) delete o[k]; else o[k]=val;
+}
+
+function initDemo(){
+  const KEY = "fy-demo";
+  let tree = {};
+  try { tree = JSON.parse(ls.get(KEY) || "{}"); } catch(e){ tree = {}; }
+  Store.set = (p,v) => { setIn(tree,p,JSON.parse(JSON.stringify(v ?? null))); ls.set(KEY, JSON.stringify(tree)); onData(JSON.parse(JSON.stringify(tree))); return Promise.resolve(); };
+  window.addEventListener("storage", e => { if (e.key===KEY){ try{ tree=JSON.parse(e.newValue||"{}"); }catch(_){ tree={}; } onData(JSON.parse(JSON.stringify(tree))); } });
+  Store.ready = true;
+  onData(JSON.parse(JSON.stringify(tree)));
+}
+
+function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+
+async function initFirebase(){
+  try {
+    const V = "10.12.2";
+    await loadScript(`https://www.gstatic.com/firebasejs/${V}/firebase-app-compat.js`);
+    await loadScript(`https://www.gstatic.com/firebasejs/${V}/firebase-database-compat.js`);
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const db = firebase.database();
+    Store.set = (p,v) => db.ref(ROOT+"/"+p).set(v ?? null).catch(err => toast("שגיאה בשמירה"));
+    const timer = setTimeout(()=>{ if(!loaded) showError("אין חיבור לשרת. בדוק את האינטרנט ונסה לרענן."); }, 10000);
+    db.ref(ROOT).on("value", snap => { clearTimeout(timer); onData(snap.val() || {}); },
+      err => showError("אין הרשאה למסד הנתונים. בדוק את כללי Firebase."));
+    Store.ready = true;
+  } catch(e){ showError("לא הצלחתי לטעון את Firebase. בדוק את האינטרנט ונסה לרענן."); }
+}
+function showError(msg){ $("#app").innerHTML = `<div class="wrap"><div class="wait"><div class="big">⚠️</div><h2>משהו לא עובד</h2><p class="muted">${esc(msg)}</p></div></div>`; }
+
+function onData(t){
+  S = t || {};
+  const first = !loaded; loaded = true;
+  if (view()==="admin" && isAdmin() && !S.setup) seed();
+  render();
+  if (first) maybeTvEffects(true);
+}
+
+function seed(){
+  const setup = {members:{}, categories:{}};
+  const used = new Set();
+  SEED_MEMBERS.forEach((n,i)=>{ let c; do{ c=String(Math.floor(1000+Math.random()*9000)); }while(used.has(c)); used.add(c); setup.members["m"+(i+1)]={name:n,code:c,order:i+1}; });
+  SEED_CATS.forEach(([e,t],i)=>{ setup.categories["c"+(i+1)]={emoji:e,title:t,order:i+1}; });
+  Store.set("setup", setup);
+  Store.set("state", {phase:"idle"});
+}
+
+/* ---------- ניתוב ---------- */
+function view(){ const h = location.hash.replace("#",""); return (h==="admin"||h==="tv") ? h : "vote"; }
+const isAdmin = () => ss.get("fy-admin")==="1";
+
+function render(){
+  const a = document.activeElement;
+  if (a && a.tagName==="INPUT" && $("#app").contains(a) && a.dataset.live!=="1"){ pendingRender = true; return; }
+  pendingRender = false;
+  renderDemoBar();
+  const v = view();
+  document.body.classList.toggle("tv", v==="tv");
+  if (!loaded){ return; }
+  if (v==="tv") $("#app").innerHTML = renderTV();
+  else if (v==="admin") $("#app").innerHTML = renderAdmin();
+  else $("#app").innerHTML = renderVoter();
+  afterRender();
+}
+document.addEventListener("focusout", ()=>{ setTimeout(()=>{ if (pendingRender) render(); }, 50); });
+window.addEventListener("hashchange", ()=>{ render(); maybeTvEffects(true); });
+
+function renderDemoBar(){
+  const bar = $("#demobar");
+  if (!DEMO || view()==="tv" && document.fullscreenElement){ bar.hidden = true; return; }
+  bar.hidden = false;
+  const v = view();
+  bar.innerHTML = `מצב הדגמה · הנתונים נשמרים רק במכשיר הזה ·
+    <a href="#" class="${v==="vote"?"on":""}">📱 חבר</a>
+    <a href="#admin" class="${v==="admin"?"on":""}">🎛️ מנהל</a>
+    <a href="#tv" class="${v==="tv"?"on":""}">📺 טלוויזיה</a>`;
+}
+
+/* ---------- מסך חבר ---------- */
+function brand(sub){ return `<div class="brand"><div class="trophy">🏆</div><h1>${esc(EVENT_TITLE)} ${esc(EVENT_YEAR)}</h1>${sub?`<p>${esc(sub)}</p>`:""}</div>`; }
+
+function renderVoter(){
+  const meId = ls.get("fy-me");
+  const me = meId && member(meId);
+  if (!me){
+    return `<div class="wrap">${brand("ההצבעה של החבר'ה")}
+      <div class="card center">
+        <h2>הכנס את הקוד האישי שלך</h2>
+        <p class="muted small" style="margin-bottom:14px">4 ספרות, קיבלת מאייל בוואטסאפ</p>
+        <input id="codeIn" class="field codein" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+        <div class="err" id="codeErr"></div>
+        <button class="btn block" data-act="login" style="margin-top:6px">כניסה</button>
+      </div></div>`;
+  }
+  const st = state();
+  const c = st.cat && cat(st.cat);
+  const head = `<div class="hello"><div><span class="muted small">שלום,</span><br><b>${esc(me.name)} 👋</b></div>
+     <button class="btn ghost sm" data-act="logout">לא אני</button></div>`;
+  let body;
+  if (st.phase==="open" && c){
+    const mine = votesFor(c.id)[me.id];
+    const cands = members().filter(m=>m.id!==me.id);
+    body = `<div class="catHead"><div class="emo">${esc(c.emoji||"⭐")}</div><h2>${esc(c.title)}</h2>
+        <p class="muted">${mine ? "ההצבעה נקלטה ✔ אפשר לשנות עד שהקטגוריה נסגרת" : "למי הקול שלך?"}</p></div>
+      <div class="cands">${cands.map(m=>`
+        <button class="cand ${mine===m.id?"sel":""}" data-act="vote" data-id="${m.id}">
+          <span class="av">${esc(initials(m.name))}</span><span>${esc(m.name)}</span><span class="chk">✅</span>
+        </button>`).join("")}</div>`;
+  } else if ((st.phase==="closed") && c){
+    body = `<div class="wait"><div class="big tv-drum" style="font-size:70px">🥁</div><h2>ההצבעה ל"${esc(c.title)}" נסגרה</h2><p class="muted">עיניים לטלוויזיה…</p></div>`;
+  } else if (st.phase==="revealed" && c){
+    body = `<div class="wait"><div class="big pulse">📺</div><h2>הזוכה ב"${esc(c.title)}" על המסך!</h2><p class="muted">הקטגוריה הבאה תיפתח בקרוב</p></div>`;
+  } else {
+    body = `<div class="wait"><div class="big pulse">⏳</div><h2>מחכים לקטגוריה הבאה</h2><p class="muted">המסך יתעדכן לבד ברגע שההצבעה נפתחת</p></div>`;
+  }
+  return `<div class="wrap">${brand()}${head}${body}</div>`;
+}
+
+/* ---------- מסך מנהל ---------- */
+function renderAdmin(){
+  if (!isAdmin()){
+    return `<div class="wrap">${brand("מסך מנהל")}
+      <div class="card center"><h2>קוד מנהל</h2>
+      <input id="pinIn" class="field codein" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+      <div class="err" id="pinErr"></div>
+      <button class="btn block" data-act="admin-login">כניסה</button>
+      ${DEMO?`<p class="muted small" style="margin-top:10px">בהדגמה הקוד הוא ${esc(ADMIN_PIN)}</p>`:""}</div></div>`;
+  }
+  if (!S.setup) return `<div class="wrap">${brand("מסך מנהל")}<div class="wait"><div class="big pulse">⚙️</div><p class="muted">מכין נתוני התחלה…</p></div></div>`;
+  const tabs = [["live","🎛️ ניהול חי"],["setup","✏️ הגדרות"],["links","🔗 קודים וקישורים"]];
+  const body = adminTab==="setup" ? adminSetup() : adminTab==="links" ? adminLinks() : adminLive();
+  return `<div class="wrap">${brand("מסך מנהל")}
+    <div class="tabs">${tabs.map(([k,l])=>`<button class="${adminTab===k?"on":""}" data-act="tab" data-id="${k}">${l}</button>`).join("")}</div>
+    ${body}</div>`;
+}
+
+function phaseBadge(p){
+  return {open:`<span class="badge b-open">הצבעה פתוחה</span>`,closed:`<span class="badge b-closed">נסגרה, ממתין לחשיפה</span>`,
+    revealed:`<span class="badge b-rev">נחשף 🏆</span>`}[p] || `<span class="badge b-idle">מסך המתנה</span>`;
+}
+
+function adminLive(){
+  const st = state(); const ms = members(); const c = st.cat && cat(st.cat);
+  let cur = "";
+  if (c){
+    const v = votesFor(c.id); const n = votedCount(c.id); const N = ms.length;
+    const t = tally(c.id); const max = t[0]?.n || 1;
+    const btns = st.phase==="open"
+      ? `<button class="btn block" data-act="close">🔒 סגור הצבעה</button>`
+      : st.phase==="closed"
+      ? `<div class="row"><button class="btn grow" data-act="reveal">🎉 חשוף בטלוויזיה</button><button class="btn ghost" data-act="reopen">פתח מחדש</button></div>`
+      : `<div class="row"><button class="btn grow" data-act="next">הקטגוריה הבאה ←</button><button class="btn ghost" data-act="idle">מסך המתנה</button></div>`;
+    cur = `<div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">${esc(c.emoji||"⭐")} ${esc(c.title)}</h2>${phaseBadge(st.phase)}</div>
+      <div class="muted small">${n} מתוך ${N} הצביעו</div>
+      <div class="progress"><i style="width:${N?Math.round(n/N*100):0}%"></i></div>
+      <div class="list" style="margin:12px 0">${ms.map(m=>{
+        const to = v[m.id] && member(v[m.id]);
+        return `<div class="li"><span class="grow">${esc(m.name)}</span>${to?`<span class="small">הצביע ל<b>${esc(to.name)}</b></span> ✅`:`<span class="muted small">עוד לא הצביע</span> ⏳`}</div>`;
+      }).join("")}</div>
+      ${t.length?`<div style="margin-bottom:12px">${t.map(x=>`<div class="bar"><span class="nm">${esc(x.name)}</span><span class="tr"><i style="width:${x.n/max*100}%"></i></span><span class="n">${x.n}</span></div>`).join("")}</div>`:""}
+      ${btns}
+    </div>`;
+  } else {
+    cur = `<div class="card center"><p class="muted">הטלוויזיה במסך המתנה. בחר קטגוריה כדי לפתוח הצבעה.</p></div>`;
+  }
+  const list = cats().map(k=>{
+    const w = winners(k.id); const live = st.cat===k.id;
+    const status = isRevealed(k.id) ? `<span class="small">🏆 ${esc(w.map(x=>x.name).join(" + ")||"אין קולות")}</span>`
+      : live ? phaseBadge(st.phase) : `<span class="muted small">${votedCount(k.id)} קולות</span>`;
+    return `<div class="li"><span class="emo">${esc(k.emoji||"⭐")}</span><span class="grow"><b>${esc(k.title)}</b><br>${status}</span>
+      ${live && st.phase!=="revealed" ? "" : `<button class="btn sm ${isRevealed(k.id)?"ghost":""}" data-act="open-cat" data-id="${k.id}">${isRevealed(k.id)?"שוב":"פתח"}</button>`}</div>`;
+  }).join("");
+  return `${cur}
+    <div class="card"><h2>קטגוריות</h2><div class="list">${list || `<p class="muted">אין קטגוריות. הוסף בלשונית הגדרות.</p>`}</div></div>
+    <div class="card"><h2>איפוס</h2><p class="muted small" style="margin-bottom:10px">אחרי ניסיון, אפס את כל ההצבעות לפני האירוע. השמות, הקטגוריות והקודים נשארים.</p>
+      <div class="row wrapr">${c?`<button class="btn danger sm" data-act="reset-cat" data-confirm="1">אפס קטגוריה נוכחית</button>`:""}
+      <button class="btn danger sm" data-act="reset-all" data-confirm="1">אפס את כל ההצבעות</button></div></div>`;
+}
+
+function adminSetup(){
+  const ms = members(), cs = cats();
+  return `<div class="card"><h2>👥 חברים (${ms.length})</h2>
+      ${ms.map(m=>`<div class="ed">
+        <input class="field grow" value="${esc(m.name)}" data-path="setup/members/${m.id}/name">
+        <span class="code">${esc(m.code)}</span>
+        <button class="ibtn" title="קוד חדש" data-act="regen" data-id="${m.id}">🔄</button>
+        <button class="ibtn" title="מחק" data-act="del-member" data-id="${m.id}" data-confirm="1">🗑</button></div>`).join("")}
+      <div class="ed" style="margin-top:12px"><input id="newMember" class="field grow" placeholder="שם חבר חדש"><button class="btn sm" data-act="add-member">הוסף</button></div>
+      <p class="muted small">קוד אישי נוצר אוטומטית לכל חבר חדש.</p></div>
+    <div class="card"><h2>🏅 קטגוריות (${cs.length})</h2>
+      ${cs.map((k,i)=>`<div class="ed">
+        <input class="field emoin" value="${esc(k.emoji||"")}" data-path="setup/categories/${k.id}/emoji" maxlength="4">
+        <input class="field grow" value="${esc(k.title)}" data-path="setup/categories/${k.id}/title">
+        <button class="ibtn" data-act="move" data-id="${k.id}" data-dir="-1" ${i===0?"disabled style='opacity:.3'":""}>▲</button>
+        <button class="ibtn" data-act="move" data-id="${k.id}" data-dir="1" ${i===cs.length-1?"disabled style='opacity:.3'":""}>▼</button>
+        <button class="ibtn" data-act="del-cat" data-id="${k.id}" data-confirm="1">🗑</button></div>`).join("")}
+      <div class="ed" style="margin-top:12px"><input id="newCatEmo" class="field emoin" placeholder="⭐" maxlength="4"><input id="newCat" class="field grow" placeholder="קטגוריה חדשה"><button class="btn sm" data-act="add-cat">הוסף</button></div></div>`;
+}
+
+function inviteText(m){
+  return `היי ${m.name}! 🏆\nההצבעה ל${EVENT_TITLE} ${EVENT_YEAR} תתקיים באירוע עצמו.\nהקישור: ${baseUrl()}\nהקוד האישי שלך: ${m.code}\n(אל תעביר אותו לאף אחד 😉)`;
+}
+
+function adminLinks(){
+  const ms = members();
+  return `<div class="card"><h2>📱 קישור להצבעה</h2>
+      <div class="row"><input class="field grow small" readonly value="${esc(baseUrl())}" data-live="1"><button class="btn sm" data-act="copy" data-text="${esc(baseUrl())}">העתק</button></div>
+      <div class="center" style="margin-top:12px"><div class="qr" style="width:180px" data-qr="${esc(baseUrl())}"></div></div></div>
+    <div class="card"><h2>📺 קישור לטלוויזיה</h2>
+      <div class="row"><input class="field grow small" readonly value="${esc(baseUrl()+"#tv")}" data-live="1"><button class="btn sm" data-act="copy" data-text="${esc(baseUrl()+"#tv")}">העתק</button></div>
+      <p class="muted small" style="margin-top:8px">פתח בדפדפן של הטלוויזיה או במחשב שמחובר אליה, ולחץ "מסך מלא".</p></div>
+    <div class="card"><h2>🔑 קודים אישיים</h2>
+      <p class="muted small" style="margin-bottom:10px">שלח לכל חבר הודעה עם הקישור והקוד שלו.</p>
+      <div class="list">${ms.map(m=>`<div class="li"><span class="grow">${esc(m.name)}</span><span class="code">${esc(m.code)}</span>
+        <button class="ibtn" title="העתק הודעה" data-act="copy" data-text="${esc(inviteText(m))}">📋</button>
+        <a class="ibtn" style="display:grid;place-items:center;text-decoration:none" title="שלח בוואטסאפ" href="https://wa.me/?text=${encodeURIComponent(inviteText(m))}" target="_blank" rel="noopener">💬</a></div>`).join("")}</div></div>`;
+}
+
+/* ---------- טלוויזיה ---------- */
+function renderTV(){
+  const st = state(); const c = st.cat && cat(st.cat); const ms = members();
+  const top = `<div class="tv-top">🏆 ${esc(EVENT_TITLE)} ${esc(EVENT_YEAR)}</div>`;
+  const fs = `<button class="fsbtn" data-act="fullscreen">⛶ מסך מלא</button>`;
+  let inner;
+  if (st.phase==="open" && c){
+    const v = votesFor(c.id); const n = votedCount(c.id);
+    inner = `<div class="tv-emo pulse">${esc(c.emoji||"⭐")}</div><div class="tv-title">${esc(c.title)}</div>
+      <div class="tv-count">${n} / ${ms.length}</div><div class="tv-sub">הצביעו</div>
+      <div class="tv-chips">${ms.map(m=>`<span class="tv-chip ${v[m.id]?"on":""}">${esc(m.name)}</span>`).join("")}</div>`;
+  } else if (st.phase==="closed" && c){
+    inner = `<div class="tv-drum">🥁</div><div class="tv-title">${esc(c.title)}</div><div class="tv-sub">והזוכה הוא…</div>`;
+  } else if (st.phase==="revealed" && c){
+    const w = winners(c.id); const t = tally(c.id); const max = t[0]?.n || 1;
+    inner = w.length
+      ? `<div class="tv-sub">${esc(c.emoji||"⭐")} ${esc(c.title)}</div>
+         ${w.length>1?`<div class="tv-sub" style="color:var(--gold);margin-top:1vh">תיקו!</div>`:""}
+         <div class="tv-winner">${w.map(x=>esc(x.name)).join("<br>")}</div>
+         <div class="tv-sub" style="margin-top:1vh">${w[0].n} קולות</div>
+         <div class="tv-bars">${t.map(x=>`<div class="bar"><span class="nm">${esc(x.name)}</span><span class="tr"><i style="width:${x.n/max*100}%"></i></span><span class="n">${x.n}</span></div>`).join("")}</div>`
+      : `<div class="tv-emo">🤷</div><div class="tv-title">${esc(c.title)}</div><div class="tv-sub">אף אחד לא הצביע</div>`;
+  } else {
+    const hof = cats().filter(k=>isRevealed(k.id) && winners(k.id).length);
+    inner = `<div class="tv-emo pulse">🏆</div><div class="tv-title">${esc(EVENT_TITLE)} ${esc(EVENT_YEAR)}</div>
+      ${hof.length
+        ? `<div class="tv-sub">הזוכים עד עכשיו</div><div class="tv-hof">${hof.map(k=>`<div class="h">${esc(k.emoji||"⭐")} ${esc(k.title)}<b>${esc(winners(k.id).map(x=>x.name).join(" + "))}</b></div>`).join("")}</div>`
+        : `<div class="tv-sub">סרקו, הכניסו את הקוד שלכם וחכו להצבעה הראשונה</div><div class="qr tv-qr" data-qr="${esc(baseUrl())}"></div>`}`;
+  }
+  return `<div class="tvw">${top}${inner}${fs}</div>`;
+}
+
+let lastRevealKey = null;
+function maybeTvEffects(init){
+  if (view()!=="tv") return;
+  const st = state();
+  const key = st.phase==="revealed" && st.cat ? st.cat : null;
+  if (key && key!==lastRevealKey && !init) confetti();
+  lastRevealKey = key;
+}
+
+/* ---------- QR ---------- */
+let qrLib = null;
+function afterRender(){
+  if (view()==="tv") maybeTvEffects(false);
+  const els = document.querySelectorAll("[data-qr]");
+  if (!els.length) return;
+  const draw = () => els.forEach(el => { try { const q = qrcode(0,"M"); q.addData(el.dataset.qr); q.make(); el.innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); } catch(e){ el.remove(); } });
+  if (window.qrcode) return draw();
+  if (!qrLib) qrLib = loadScript("https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js");
+  qrLib.then(()=>{ render(); }).catch(()=>els.forEach(el=>el.remove()));
+}
+
+/* ---------- קונפטי ---------- */
+function confetti(){
+  const cv = $("#confetti"), cx = cv.getContext("2d");
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ["#f7c948","#ffb703","#ffffff","#3ddc97","#ff6b9a","#7aa2ff"];
+  const P = Array.from({length:220},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,r:4+Math.random()*6,c:colors[Math.floor(Math.random()*colors.length)],a:Math.random()*6,va:(Math.random()-.5)*.3}));
+  const end = Date.now()+6000;
+  (function frame(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.03; p.a+=p.va; cx.save(); cx.translate(p.x,p.y); cx.rotate(p.a); cx.fillStyle=p.c; cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); cx.restore(); });
+    if (Date.now()<end) requestAnimationFrame(frame); else cx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+/* ---------- פעולות ---------- */
+function nextCat(fromId){
+  const cs = cats(); const i = cs.findIndex(k=>k.id===fromId);
+  return cs.slice(i+1).find(k=>!isRevealed(k.id)) || cs.find(k=>!isRevealed(k.id) && k.id!==fromId);
+}
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]");
+  if (!el || el.disabled) return;
+  if (el.tagName==="A" && el.dataset.act!=="fullscreen") return; // קישורים רגילים
+  const act = el.dataset.act, id = el.dataset.id;
+  if (el.dataset.confirm && !el.classList.contains("armed")){
+    el.classList.add("armed"); el.dataset.orig = el.innerHTML; el.innerHTML = el.classList.contains("ibtn") ? "?" : "בטוח? לחץ שוב";
+    setTimeout(()=>{ if (el.isConnected){ el.classList.remove("armed"); el.innerHTML = el.dataset.orig; } }, 3000);
+    return;
+  }
+  const st = state();
+  switch(act){
+    case "login": doLogin(); break;
+    case "logout": ls.set("fy-me", null); render(); break;
+    case "vote": {
+      const meId = ls.get("fy-me");
+      if (st.phase!=="open" || !st.cat || !meId || id===meId) return;
+      Store.set(`votes/${st.cat}/${meId}`, id);
+      if (navigator.vibrate) try{ navigator.vibrate(30); }catch(_){}
+      break;
+    }
+    case "admin-login": doAdminLogin(); break;
+    case "tab": adminTab = id; render(); break;
+    case "open-cat": Store.set("state", {cat:id, phase:"open"}); break;
+    case "close": Store.set("state/phase", "closed"); break;
+    case "reopen": Store.set("state/phase", "open"); break;
+    case "reveal": Store.set("revealed/"+st.cat, true); Store.set("state/phase", "revealed"); break;
+    case "next": { const n = nextCat(st.cat); Store.set("state", n ? {cat:n.id, phase:"open"} : {phase:"idle"}); if(!n) toast("כל הקטגוריות נחשפו 🎉"); break; }
+    case "idle": Store.set("state", {phase:"idle"}); break;
+    case "reset-cat": Store.set("votes/"+st.cat, null); Store.set("revealed/"+st.cat, null); Store.set("state", {cat:st.cat, phase:"open"}); toast("הקטגוריה אופסה"); break;
+    case "reset-all": Store.set("votes", null); Store.set("revealed", null); Store.set("state", {phase:"idle"}); toast("כל ההצבעות אופסו"); break;
+    case "add-member": {
+      const inp = $("#newMember"); const name = inp.value.trim(); if (!name) return;
+      inp.value = ""; inp.blur(); Store.set(`setup/members/${newId("m")}`, {name, code:genCode(), order:Date.now()}); break;
+    }
+    case "del-member": Store.set(`setup/members/${id}`, null); break;
+    case "regen": Store.set(`setup/members/${id}/code`, genCode()); toast("נוצר קוד חדש"); break;
+    case "add-cat": {
+      const inp = $("#newCat"), em = $("#newCatEmo"); const title = inp.value.trim(); if (!title) return;
+      const emoji = em.value.trim() || "⭐"; inp.value = ""; em.value = ""; inp.blur();
+      Store.set(`setup/categories/${newId("c")}`, {title, emoji, order:Date.now()}); break;
+    }
+    case "del-cat": Store.set(`setup/categories/${id}`, null); if (st.cat===id) Store.set("state", {phase:"idle"}); break;
+    case "move": {
+      const cs = cats(); const i = cs.findIndex(k=>k.id===id); const j = i + Number(el.dataset.dir);
+      if (j<0 || j>=cs.length) return;
+      const a = cs[i], b = cs[j]; let oa = a.order||0, ob = b.order||0; if (oa===ob) ob = oa + 1;
+      Store.set(`setup/categories/${a.id}/order`, ob); Store.set(`setup/categories/${b.id}/order`, oa); break;
+    }
+    case "copy": {
+      const t = el.dataset.text;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(()=>toast("הועתק ✔")).catch(()=>toast("לא הצלחתי להעתיק"));
+      break;
+    }
+    case "fullscreen": try { document.documentElement.requestFullscreen().catch(()=>{}); } catch(_){} break;
+  }
+});
+
+document.addEventListener("change", e => {
+  const p = e.target.dataset && e.target.dataset.path; if (!p) return;
+  const v = e.target.value.trim(); if (!v && !p.endsWith("/emoji")) { render(); return; }
+  Store.set(p, v || "⭐");
+});
+document.addEventListener("keydown", e => {
+  if (e.key!=="Enter") return;
+  const id = e.target.id;
+  if (id==="codeIn") doLogin();
+  else if (id==="pinIn") doAdminLogin();
+  else if (id==="newMember") $('[data-act="add-member"]').click();
+  else if (id==="newCat") $('[data-act="add-cat"]').click();
+  else if (e.target.dataset.path) e.target.blur();
+});
+document.addEventListener("input", e => {
+  if (e.target.id==="codeIn"){ e.target.value = e.target.value.replace(/\D/g,""); if (e.target.value.length===4) doLogin(); }
+});
+
+function doLogin(){
+  const inp = $("#codeIn"); if (!inp) return;
+  const code = inp.value.trim(); const m = members().find(x=>x.code===code);
+  if (!m){ $("#codeErr").textContent = "הקוד לא מוכר. בדוק שוב 🙂"; inp.select(); return; }
+  ls.set("fy-me", m.id); inp.blur(); render();
+}
+function doAdminLogin(){
+  const inp = $("#pinIn"); if (!inp) return;
+  if (inp.value.trim()!==ADMIN_PIN){ $("#pinErr").textContent = "קוד שגוי"; inp.select(); return; }
+  ss.set("fy-admin","1"); inp.blur(); if (!S.setup) seed(); render();
+}
+
+/* ---------- הפעלה ---------- */
+if (DEMO) initDemo(); else initFirebase();
+</script>
+</body>
+</html>
