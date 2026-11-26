@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>שאלון עבודות קבלניות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm, professional insurance-agency questionnaire, one column
+   IDEA: a printed broker's request form, with ruled fields and section numbers
+   PICTURE: the form itself, under a navy header band with Eyal's mark
+   COLOUR and TYPE: navy #14284b dominant, white panels, gold #c9a227 accent; Assistant
+   LAYOUT: header band, single 760px column of sections, sticky action bar at bottom */
+:root{color-scheme:light dark;
+--bg:light-dark(#eef1f6,#0d1626);--panel:light-dark(#fff,#15223a);--ink:light-dark(#14213a,#e9eef7);
+--mute:light-dark(#5b6880,#9fb0cb);--line:light-dark(#d6dce7,#2a3a57);--navy:#14284b;--gold:#c9a227;
+--field:light-dark(#f8f9fc,#0f1a2e);--focus:light-dark(#14284b,#e2c25a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Assistant,Arial,sans-serif;overflow-x:clip}
+header{background:var(--navy);color:#fff;padding:28px max(5vw,16px) 64px}
+.hwrap{max-width:760px;margin:auto;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand b{display:block;font-size:22px;font-weight:800;line-height:1}
+.brand small{color:var(--gold);font-size:14px;font-weight:600}
+header h1{font-size:clamp(28px,5vw,40px);line-height:1.1;margin:22px 0 6px;text-wrap:balance;max-width:760px}
+header p{margin:0;color:#c9d3e6;max-width:62ch}
+.hmeta{font-size:14px;color:#c9d3e6}
+main{max-width:760px;margin:-40px auto 0;padding:0 max(3vw,12px) 120px}
+.sec{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,4vw,28px);margin-bottom:14px}
+.sec h2{display:flex;gap:10px;align-items:baseline;font-size:20px;margin:0 0 14px}
+.sec h2 span{color:var(--gold);font-size:16px;font-weight:800}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 16px;margin-bottom:14px}
+.row:last-child{margin-bottom:0}
+label.f{display:block;font-weight:600;font-size:15px}
+label.f em{font-style:normal;color:var(--mute);font-weight:400;font-size:13px}
+input[type=text],input[type=tel],input[type=email],input[type=date],input[type=number],textarea,select{
+ display:block;width:100%;margin-top:5px;font:inherit;font-size:16px;color:var(--ink);background:var(--field);
+ border:1px solid var(--line);border-radius:9px;padding:10px 12px;min-height:44px}
+textarea{min-height:88px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--focus);outline-offset:1px}
+.q{font-weight:600;font-size:15px;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{position:relative}
+.chips input{position:absolute;opacity:0;inset:0}
+.chips span{display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--field);cursor:pointer;font-weight:600}
+.chips input:checked+span{background:var(--navy);color:#fff;border-color:var(--navy)}
+:root[data-theme=dark] .chips input:checked+span{background:var(--gold);color:#14213a;border-color:var(--gold)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .chips input:checked+span{background:var(--gold);color:#14213a;border-color:var(--gold)}}
+.chips input:focus-visible+span{outline:2px solid var(--focus);outline-offset:2px}
+.sub{margin-top:10px}.hide{display:none}
+.cov{width:100%;border-collapse:collapse}
+.cov td{padding:6px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.cov td:first-child{padding-inline-end:12px;font-size:15px}
+.cov td:last-child{width:170px}
+.cov input{margin:0;text-align:left;direction:ltr}
+.cov tr.grp td{padding-top:16px;font-weight:700;color:var(--mute);font-size:14px;border-bottom:0}
+.note{font-size:14px;color:var(--mute);margin:4px 0 12px}
+.bar{position:fixed;inset:auto 0 0 0;background:var(--panel);border-top:1px solid var(--line);padding:10px max(3vw,12px);z-index:5}
+.bwrap{max-width:760px;margin:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;font-size:16px;min-height:46px;padding:0 20px;border-radius:10px;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn.p{background:var(--navy);color:#fff}
+.btn.w{background:#1f9d55;color:#fff}
+.btn.g{background:transparent;color:var(--mute);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn[disabled]{opacity:.6;cursor:wait}
+#msg{font-size:14px;color:var(--mute);flex:1 1 200px}
+@media(max-width:600px){.cov td:last-child{width:130px}.bwrap .btn{flex:1 1 auto;justify-content:center}}
+/* PDF sheet — always light */
+#sheetwrap{position:fixed;top:0;left:-10000px}
+#sheet{width:794px;background:#fff;color:#14213a;font:13px/1.45 Assistant,Arial,sans-serif;direction:rtl;padding:34px 40px}
+#sheet .sh{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #14284b;padding-bottom:12px;margin-bottom:14px}
+#sheet h1{font-size:22px;margin:0;color:#14284b}
+#sheet .d{color:#5b6880;font-size:12px}
+#sheet .blk{margin-bottom:12px;page-break-inside:avoid}
+#sheet h3{font-size:14px;margin:0 0 4px;color:#14284b;border-bottom:1px solid #c9a227;padding-bottom:2px}
+#sheet table{width:100%;border-collapse:collapse}
+#sheet td{border:1px solid #d6dce7;padding:5px 8px;vertical-align:top;white-space:pre-wrap}
+#sheet td.k{width:36%;background:#f3f5f9;font-weight:700}
+#sheet td.n{direction:ltr;text-align:left;width:30%}
+@media print{@page{size:A4;margin:12mm}body{background:#fff}body>*:not(#sheetwrap){display:none!important}#sheetwrap{position:static}#sheet{width:auto;padding:0}}
+#sheet .foot{margin-top:14px;font-size:11px;color:#5b6880;text-align:center}
+</style>
+</head>
+<body>
+<header>
+ <div class="hwrap">
+  <div class="brand">
+   <svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><path d="M38 12.5A18 18 0 1 0 41 23" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="39.5" cy="7.5" r="4.2" fill="#c9a227"/></svg>
+   <div><b>אייל חן</b><small>תהיה בטוח</small></div>
+  </div>
+  <div class="hmeta">סוכן ביטוח · 050-646-1614</div>
+ </div>
+ <div class="hwrap" style="display:block">
+  <h1>שאלון לקבלת הצעת מחיר – ביטוח עבודות קבלניות</h1>
+  <p>מלאו את הפרטים הידועים לכם, ובסוף לחצו "שמירה כ-PDF", בחרו בחלון שנפתח "שמירה כ-PDF" ושלחו לי את הקובץ. שדה שלא ידוע – אפשר להשאיר ריק. השאלון אינו מחליף את טופס הצעת הביטוח.</p>
+ </div>
+</header>
+
+<main>
+<form id="frm" autocomplete="on">
+<section class="sec"><h2><span>1</span>פרטי המבוטח</h2>
+ <div class="row">
+  <label class="f">שם המבוטח / שם העסק<input type="text" id="name" name="name"></label>
+  <label class="f">ת.ז. / ח.פ.<input type="text" id="idno" name="idno" inputmode="numeric"></label>
+ </div>
+ <div class="row">
+  <label class="f">טלפון<input type="tel" id="phone" name="phone"></label>
+  <label class="f">דוא"ל <em>(רשות)</em><input type="email" id="email" name="email"></label>
+ </div>
+ <div class="q">מעמד המבוטח לצורך הביטוח</div>
+ <div class="chips" data-r="status"></div>
+ <div class="sub hide" id="status_other_w"><label class="f">פירוט<input type="text" id="status_other"></label></div>
+</section>
+
+<section class="sec"><h2><span>2</span>הרחבת שם המבוטח</h2>
+ <div class="row">
+  <div><div class="q">כיסוי לקבלני משנה</div><div class="chips" data-r="subs" data-o="כן|לא"></div></div>
+  <div><div class="q">כיסוי ליזם</div><div class="chips" data-r="dev" data-o="כן|לא"></div></div>
+ </div>
+ <div class="hide" id="devname_w"><label class="f">שם היזם<input type="text" id="devname"></label></div>
+</section>
+
+<section class="sec"><h2><span>3</span>תיאור העבודה</h2>
+ <label class="f">תיאור העבודה<textarea id="work" placeholder="לדוגמה: בניית בית מגורים פרטי בן 2 קומות, שיפוץ דירה, תוספת בנייה…"></textarea></label>
+ <div class="row" style="margin-top:14px">
+  <div><div class="q">הבנייה מתבצעת על</div><div class="chips" data-r="on" data-o="שלב קיים|מבנה קיים|קרקע ריקה"></div></div>
+  <div><div class="q">האם יש פגיעה באלמנטים תומכים?</div><div class="chips" data-r="support" data-o="כן|לא"></div></div>
+ </div>
+ <div class="hide" id="support_d_w"><label class="f">פירוט הפגיעה באלמנטים תומכים<input type="text" id="support_d"></label></div>
+ <div class="row" style="margin-top:14px">
+  <label class="f">מס' קומות מרתף<input type="number" id="basement" min="0" inputmode="numeric"></label>
+  <label class="f">ייעוד המבנה<input type="text" id="purpose" placeholder="מגורים / מסחר / משרדים…"></label>
+ </div>
+</section>
+
+<section class="sec"><h2><span>4</span>אתר העבודה ותקופת הביטוח</h2>
+ <label class="f">כתובת אתר העבודה<input type="text" id="addr" placeholder="רחוב, מספר, עיר / גוש וחלקה"></label>
+ <div class="row" style="margin-top:14px">
+  <label class="f">תקופת ביטוח – מיום<input type="date" id="from"></label>
+  <label class="f">עד יום<input type="date" id="to"></label>
+ </div>
+ <div class="q">תקופת התחזוקה</div>
+ <div class="chips" data-r="maint" data-o="12 חודשי תחזוקה רגילה|תחזוקה מורחבת"></div>
+</section>
+
+<section class="sec"><h2><span>5</span>עבר ביטוחי של העסק</h2>
+ <div class="q">האם הייתם מבוטחים בעבר בביטוח עבודות קבלניות?</div>
+ <div class="chips" data-r="prev" data-o="כן|לא"></div>
+ <div class="row sub">
+  <label class="f">שם המבטח הקודם<input type="text" id="prevIns"></label>
+  <label class="f">שמות המבטחים ב-3 השנים האחרונות<input type="text" id="prev3"></label>
+ </div>
+ <div class="q">האם מבטח כלשהו דחה / ביטל / סירב לחדש את הביטוח?</div>
+ <div class="chips" data-r="refused" data-o="כן|לא"></div>
+ <div class="sub hide" id="refused_d_w"><label class="f">הסיבה<textarea id="refused_d"></textarea></label></div>
+ <div class="q" style="margin-top:14px">האם יש לקבלן הראשי ניסיון קודם בעבודות כאלה?</div>
+ <div class="chips" data-r="exp" data-o="כן|לא"></div>
+ <div class="sub"><label class="f">פירוט הניסיון <em>(רשות)</em><textarea id="exp_d"></textarea></label></div>
+</section>
+
+<section class="sec"><h2><span>6</span>ניסיון תביעות ב-5 השנים האחרונות</h2>
+ <label class="f">פרטו תביעות שהיו (תאריך, סוג, סכום). אם לא היו – כתבו "לא היו"<textarea id="claims"></textarea></label>
+</section>
+
+<section class="sec"><h2><span>7</span>תיאור הכיסוי וסכומי הביטוח</h2>
+ <div class="row" style="grid-template-columns:1fr"><label class="f" style="max-width:220px">מטבע הסכומים<select id="cur"><option>₪</option><option>$</option></select></label></div>
+ <p class="note">מלאו סכום רק בכיסויים שתרצו לבטח. לא בטוחים? השאירו ריק ונשלים יחד.</p>
+ <table class="cov"><tbody id="covs"></tbody></table>
+</section>
+
+
+<section class="sec"><h2><span>8</span>הערות</h2>
+ <label class="f">הערות מיוחדות של המבוטח<textarea id="notes"></textarea></label>
+</section>
+</form>
+</main>
+
+<div class="bar"><div class="bwrap">
+ <button class="btn p" id="dl" type="button">שמירה כ-PDF</button>
+ <a class="btn w" id="wa" href="https://wa.me/972506461614" target="_blank" rel="noopener">שליחה לאייל בוואטסאפ</a>
+ <button class="btn g" id="clr" type="button">ניקוי</button>
+ <span id="msg">הנתונים נשמרים אצלכם בדפדפן עד השמירה.</span>
+</div></div>
+
+<div id="sheetwrap" aria-hidden="true"><div id="sheet"></div></div>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const COV=[
+ ['g','רכוש (פרק א׳)'],
+ ['c1','שווי מלא של הפרויקט בעת שיושלם'],['c2','מתקנים וציוד קל (מוגבל ל-5,000$ לפריט)'],['c3','מבני עזר'],
+ ['c4','פינוי הריסות'],['c5','רכוש עליו מתבצע הפרויקט'],['c6','רכוש סמוך'],['c7','שכ"ט אדריכלים, מהנדסים ומומחים'],
+ ['c8','הוצאות מיוחדות במקרה נזק'],['c9','נזק עקיף מתכנון לקוי'],['c10','נזק ישיר מתכנון לקוי'],
+ ['c11','פריצה / גניבה (מותנה בקיום שמירה)'],['c12','רעידת אדמה ונזקי טבע'],
+ ['g','צד שלישי (פרק ב׳)'],
+ ['c13','גבולות אחריות למקרה ולתקופה'],['c14','ויברציה, הרעדה, החלשה והסרת משען'],
+ ['g','חבות מעבידים (פרק ג׳)'],
+ ['c15','חבות מעבידים'],
+ ['g','כיסוי נוסף (רשות)'],
+ ['x1',''],['x2','']];
+$('covs').innerHTML=COV.map(([k,l])=>k==='g'?`<tr class="grp"><td colspan="2">${l}</td></tr>`:
+ `<tr><td>${l?l:`<input type="text" id="${k}_n" placeholder="שם הכיסוי" style="margin:0">`}</td><td><input type="text" id="${k}" inputmode="decimal" aria-label="סכום ${l}"></td></tr>`).join('');
+const RAD={status:'יזם|קבלן ראשי|קבלן|אחר'};
+document.querySelectorAll('.chips[data-r]').forEach(c=>{
+ const n=c.dataset.r,o=(c.dataset.o||RAD[n]).split('|');
+ c.innerHTML=o.map(v=>`<label><input type="radio" name="${n}" value="${v}"><span>${v}</span></label>`).join('');
+});
+const radio=n=>(document.querySelector(`input[name="${n}"]:checked`)||{}).value||'';
+const show=()=>{
+ $('status_other_w').classList.toggle('hide',radio('status')!=='אחר');
+ $('devname_w').classList.toggle('hide',radio('dev')!=='כן');
+ $('support_d_w').classList.toggle('hide',radio('support')!=='כן');
+ $('refused_d_w').classList.toggle('hide',radio('refused')!=='כן');
+};
+const fmt=v=>{const d=String(v).replace(/[^\d.]/g,'');if(!d)return v;const [a,b]=d.split('.');return Number(a).toLocaleString('en-US')+(b!==undefined?'.'+b:'')};
+document.querySelectorAll('#covs input[inputmode]').forEach(i=>i.addEventListener('blur',()=>{if(i.value.trim())i.value=fmt(i.value)}));
+const KEY='eyal-cw-form';
+const fields=()=>[...document.querySelectorAll('#frm input,#frm textarea,#frm select')];
+const save=()=>{try{const o={};fields().forEach(e=>{if(e.type==='radio'){if(e.checked)o['r_'+e.name]=e.value}else if(e.id)o[e.id]=e.value});localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}};
+const load=()=>{try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');fields().forEach(e=>{if(e.type==='radio'){e.checked=o['r_'+e.name]===e.value}else if(e.id&&o[e.id]!=null)e.value=o[e.id]})}catch(e){}};
+load();show();
+$('frm').addEventListener('input',()=>{show();save()});
+$('frm').addEventListener('change',()=>{show();save()});
+$('clr').onclick=()=>{if($('clr').dataset.sure){$('frm').reset();try{localStorage.removeItem(KEY)}catch(e){}show();$('clr').textContent='ניקוי';delete $('clr').dataset.sure;$('msg').textContent='הטופס נוקה.'}else{$('clr').dataset.sure=1;$('clr').textContent='לנקות הכול? לחצו שוב';setTimeout(()=>{delete $('clr').dataset.sure;$('clr').textContent='ניקוי'},4000)}};
+
+const v=id=>$(id).value.trim();
+const dt=s=>s?s.split('-').reverse().join('/'):'';
+const tbl=rows=>{rows=rows.filter(r=>r[1]);return rows.length?`<table>${rows.map(([k,x])=>`<tr><td class="k">${esc(k)}</td><td>${esc(x)}</td></tr>`).join('')}</table>`:'<table><tr><td>לא מולא</td></tr></table>'};
+const blk=(t,h)=>`<div class="blk"><h3>${t}</h3>${h}</div>`;
+function buildSheet(){
+ const cur=$('cur').value;
+ const cov=COV.filter(([k])=>k!=='g').map(([k,l])=>[k[0]==='x'?v(k+'_n')||'כיסוי נוסף':l,v(k)]).filter(r=>r[1]);
+ const covH=cov.length?`<table>${cov.map(([l,a])=>`<tr><td>${esc(l)}</td><td class="n">${esc(a)} ${cur}</td></tr>`).join('')}</table>`:'<table><tr><td>לא צוינו סכומים</td></tr></table>';
+ const today=new Date().toLocaleDateString('he-IL');
+ $('sheet').innerHTML=`<div class="sh"><div><h1>בקשה לקבלת הצעת מחיר – ביטוח עבודות קבלניות</h1><div class="d">מולא ע"י הלקוח · ${today} · השאלון אינו מחליף את טופס הצעת הביטוח</div></div>
+ <div style="display:flex;align-items:center;gap:8px"><svg width="36" height="36" viewBox="0 0 46 46"><path d="M38 12.5A18 18 0 1 0 41 23" fill="none" stroke="#14284b" stroke-width="5" stroke-linecap="round"/><circle cx="39.5" cy="7.5" r="4.2" fill="#c9a227"/></svg><div><b style="font-size:17px;color:#14284b">אייל חן</b><div style="color:#c9a227;font-size:11px;font-weight:700">תהיה בטוח</div></div></div></div>`+
+ blk('פרטי המבוטח',tbl([['שם המבוטח',v('name')],['ת.ז. / ח.פ.',v('idno')],['טלפון',v('phone')],['דוא"ל',v('email')],['מעמד המבוטח',radio('status')==='אחר'?'אחר: '+v('status_other'):radio('status')]]))+
+ blk('הרחבת שם המבוטח',tbl([['כיסוי לקבלני משנה',radio('subs')],['כיסוי ליזם',radio('dev')],['שם היזם',radio('dev')==='כן'?v('devname'):'']]))+
+ blk('תיאור העבודה',tbl([['תיאור העבודה',v('work')],['הבנייה מתבצעת על',radio('on')],['פגיעה באלמנטים תומכים',radio('support')+(radio('support')==='כן'&&v('support_d')?' – '+v('support_d'):'')],['מס\' קומות מרתף',v('basement')],['ייעוד',v('purpose')]]))+
+ blk('אתר העבודה ותקופת הביטוח',tbl([['כתובת אתר העבודה',v('addr')],['תקופת הביטוח',(v('from')||v('to'))?`מיום ${dt(v('from'))||'—'} עד יום ${dt(v('to'))||'—'}`:''],['תקופת התחזוקה',radio('maint')]]))+
+ blk('עבר ביטוחי של העסק',tbl([['בוטח בעבר בעבודות קבלניות',radio('prev')],['המבטח הקודם',v('prevIns')],['מבטחים ב-3 השנים האחרונות',v('prev3')],['מבטח דחה / ביטל / סירב לחדש',radio('refused')],['סיבה',radio('refused')==='כן'?v('refused_d'):''],['ניסיון קודם של הקבלן הראשי',radio('exp')],['פירוט הניסיון',v('exp_d')]]))+
+ blk('ניסיון תביעות ב-5 השנים האחרונות',tbl([['תביעות',v('claims')]]))+
+ blk('תיאור הכיסוי וסכומי הביטוח',covH)+
+ (v('notes')?blk('הערות המבוטח',tbl([['הערות',v('notes')]])):'')+
+ `<div class="foot">אייל חן – סוכן ביטוח · 050-646-1614</div>`;
+}
+$('dl').onclick=()=>{
+ buildSheet();
+ const t=document.title;document.title=fname().replace(/\.pdf$/,'');
+ window.print();
+ setTimeout(()=>{document.title=t},1000);
+ $('msg').textContent='בחלון שנפתח בחרו "שמירה כ-PDF" (Save as PDF) ושמרו. אחר כך שלחו את הקובץ לאייל בוואטסאפ.';
+};
+const fname=()=>'שאלון עבודות קבלניות'+(v('name')?' - '+v('name').replace(/[\\/:*?"<>|]/g,''):'')+'.pdf';
+$('wa').addEventListener('click',()=>{
+ const t=`שלום אייל, מילאתי את שאלון עבודות קבלניות${v('name')?' ('+v('name')+')':''}. מצרף/ת את קובץ ה-PDF.`;
+ $('wa').href='https://wa.me/972506461614?text='+encodeURIComponent(t);
+});
+}
+</script>
+</body>
+</html>
